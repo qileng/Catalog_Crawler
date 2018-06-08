@@ -63,4 +63,19 @@ def stripName(data):
 	
 	return result
 
+def stripRequirement(data):
+	key = "<strong class=\"italic\">"
+	result = []
 
+	for entry in data:
+		if key in entry:
+			# Search for key
+			index = entry.index(key)
+			# Offset index to after key
+			index += len(key)
+			# Strip the leading string
+			result.append(entry[index:len(entry)])
+		else:
+			result.append("None")
+	
+	return result

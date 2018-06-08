@@ -7,13 +7,16 @@
 #
 
 from httpGet import HTTPGet
-from parse import trimHeader, trimFooter, filterDescription, filterName, stripName
+# TODO: Put all parsing steps into one parser.
+from parse import trimHeader, trimFooter, filterDescription, filterName, stripName, stripRequirement
+
 
 def main():
 	data = HTTPGet().split('\n')
 	data = trimHeader(data)
 	data = trimFooter(data)
 	des = filterDescription(data)
+	des = stripRequirement(des)
 	nam = filterName(data)
 	nam = stripName(nam)
 
