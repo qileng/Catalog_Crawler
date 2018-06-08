@@ -49,3 +49,18 @@ def filterName(data):
 			result.append(entry)
 
 	return result
+
+def stripName(data):
+	key = '"'
+	result = []
+
+	for entry in data:
+		# Find first \"
+		first = entry.index(key) + 1
+		# Find second \"
+		second = entry.index(key, first, len(entry))
+		result.append(entry[first:second])
+	
+	return result
+
+

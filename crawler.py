@@ -7,7 +7,7 @@
 #
 
 from httpGet import HTTPGet
-from parse import trimHeader, trimFooter, filterDescription, filterName
+from parse import trimHeader, trimFooter, filterDescription, filterName, stripName
 
 def main():
 	data = HTTPGet().split('\n')
@@ -15,6 +15,7 @@ def main():
 	data = trimFooter(data)
 	des = filterDescription(data)
 	nam = filterName(data)
+	nam = stripName(nam)
 
 	name = open("./name", mode = 'w', encoding = 'utf8')
 	descriptions = open("./descriptions", mode = 'w', encoding = 'utf8')
