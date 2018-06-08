@@ -1,16 +1,31 @@
-# A web crawler for UCSD general catalog
-import scrapy
-from scrapy.spiders import CrawlSpider, Rule
-from scrapy.linkextractor import LinkExtractor
+# Web crawler built for crawling course info from UCSD General Catalog
+#
+# Author: Qihao Leng
+# Date: June.8, 2018
+# Contact: qileng@ucsd.edu
+#
+#
 
-class CatalogCrawler(CrawlSpider):
-    name = "CatalogCrawler"
-    allowed_domains = ["www.ucsd.edu"]
-    start_urls = ['http://www.ucsd.edu/catalog/courses/CSE.html']
+from httpGet import HTTPGet
+from parse import trimHeader, trimFooter, filterDescription, filterName
 
-    # Parsing rules
-    rules = [Rule(LinkExtractor(allow = (), restrict_css = '.course-name', ), callback="parse_item", follow = True),]
+def main():
+	data = HTTPGet().split('\n')
+	data = trimHeader(data)
+	data = trimFooter(data)
+	des = filterDescription(data)
+	nam = filterName(data)
 
-    def parse_item(self, response):
-        print('Processing..' + response.url)
-        #print('Course name is: ' + response.)
+	name = open("./name", mode = 'w', encoding = 'utf8')
+	descriptions = open("./descriptions", mode = 'w', encoding = 'utf8')
+
+	for entry in des:
+		descriptions.write(entry + '\n')
+	
+	for entry in nam:
+		name.write(entry + '\n')
+
+
+if __name__ == "__main__":
+	main()
+
