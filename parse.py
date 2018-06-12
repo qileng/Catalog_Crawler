@@ -6,6 +6,15 @@
 #
 #
 
+# High level interfaces to parse course IDs and requirements
+def parseCourseID(data):
+	return data
+
+def parseRequirement(data):
+	return data
+
+
+# Low level parsing method. Consider switching to c++.
 def trimHeader(data):
 	key = "<h2>Courses</h2>"
 

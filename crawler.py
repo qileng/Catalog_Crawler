@@ -12,24 +12,24 @@ from parse import trimHeader, trimFooter, filterDescription, filterName, stripNa
 
 
 def main():
-	data = HTTPGet().split('\n')
+	# Retrieve raw data
+	data = HTTPGet()
 	data = trimHeader(data)
 	data = trimFooter(data)
-	des = filterDescription(data)
-	des = stripRequirement(des)
+	# des = filterDescription(data)
+	# des = stripRequirement(des)
 	nam = filterName(data)
 	nam = stripName(nam)
 
 	name = open("./name", mode = 'w', encoding = 'utf8')
-	descriptions = open("./descriptions", mode = 'w', encoding = 'utf8')
+	# descriptions = open("./descriptions", mode = 'w', encoding = 'utf8')
+	#
+	# for entry in des:
+	# 	descriptions.write(entry + '\n')
 
-	for entry in des:
-		descriptions.write(entry + '\n')
-	
 	for entry in nam:
 		name.write(entry + '\n')
 
 
 if __name__ == "__main__":
 	main()
-
