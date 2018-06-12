@@ -50,10 +50,10 @@ def filterDescription(data):
 
 
 def filterName(data):
-	key = "<a id=\""
+	key = "id=\""
 	result = []
 
-	for entry in data:
+	for entry in data.split('\n'):
 		if key in entry:
 			result.append(entry)
 

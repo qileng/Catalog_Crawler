@@ -8,6 +8,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <iterator>
+#include <typeinfo>
 
 using namespace std;
 
@@ -60,6 +62,23 @@ class filter {
         }
 };
 
+vector<string> readCourses(filebuf *input) {
+    vector<string> result;
+
+    input->open("./name", ios_base::in);
+
+    while (input->sgetc() != EOF) {
+        string temp = "";
+        do {
+            temp.push_back(input->sgetc());
+        } while (input->sbumpc() != '\n');
+        result.push_back(temp);
+    }
+
+    input->close();
+
+    return result;
+}
 
 int main(int argc, char** argv) {
 
@@ -68,6 +87,9 @@ int main(int argc, char** argv) {
 
     filebuf *input = is.rdbuf();
     filebuf *output = os.rdbuf();
+
+    // Read list of course names first.
+    vector<string> name = readCourses(input);
 
     input->open("./content.html", ios_base::in);
     output->open("./requirements", ios_base::out);
@@ -80,7 +102,6 @@ int main(int argc, char** argv) {
 
     // Result
     vector<string> result;
-    string description;
 
     // read from raw
     // while (input->sbumpc() != EOF) {
@@ -108,29 +129,63 @@ int main(int argc, char** argv) {
     // First scan for key matching pair,
     // then pause & search inbetween the pair.
     string buf;
-    while (input->sgetc() != EOF && !begin->push(input->sbumpc()));
-    // while (input->sgetc() != EOF && (buf.push_back(input->sgetc()),!end->push(input->sdumpc())));
-    // Expand into loop body for readability
-    while (input->sgetc() != EOF ) {
-        // Put content into a buffer to avoid tampering with seek pos.
-        buf.push_back(input->sgetc());
-        if (end->push(input->sbumpc())) {
-            break;
+    // Controls searching span stepping.
+    int flag = 1;
+    for (auto it = name.begin(); it != name.end(); it++) {
+        cout << "\n" << "Fetching " << *it;
+
+        if (flag) {
+            while (input->sgetc() != EOF && !begin->push(input->sbumpc()));
+            // while (input->sgetc() != EOF && (buf.push_back(input->sgetc()),!end->push(input->sdumpc())));
+            // Expand into loop body for readability
+            while (input->sgetc() != EOF ) {
+                // Put content into a buffer to avoid tampering with seek pos.
+                buf.push_back(input->sgetc());
+                if (end->push(input->sbumpc())) {
+                    // cout << buf << "\n";
+                    break;
+                }
+            }
+            // cout << int(input->pubseekoff(0, ios_base::cur, ios_base::in)) << "\n";
+        }
+        // Search in buffer
+        cout << int(buf.find("cse3")) << "\n";
+        cout << int(buf.find((*it).c_str())) << "\n";
+        cout << int(buf.find((*it).data())) << "\n";
+        if (buf.find(*it) == string::npos) {
+            cout << "No description for " << *it;
+            cout << "In " << buf;
+            result.push_back("None\n");
+            // Pause seeking while stepping to next course.
+            flag = 0;
+        } else if (buf.find("course-descriptions") == -1) {
+            // No description block,
+            // probably means invalid seeking result due to poor html coding.
+            cout << "Unexpected html pattern @ " << *it;
+            it--;
+            flag = 1;
+            buf.clear();
+        } else {
+            // Continue seeking, save buffer.
+            result.push_back(buf + "\n");
+            cout << "Fetched " << buf.substr(0, 6) << "\n";
+            if ((*it).find("222") > -1 ) {
+                cout << "Detailed " << buf;
+            }
+            buf.clear();
+            flag = 1;
         }
     }
-    // Seeking paused. Now search in buffer.
+
     delete begin;
     delete end;
 
-    // Research buffer for course name
-
-
-    // for (auto i = result.begin(); i != result.end(); i++) {
-    //     for (auto j = (*i).begin(); j != (*i).end(); j++) {
-    //         output->sputc(*j);
-    //     }
-    //     output->sputn("\n////////\n", 10);
-    // }
+    for (auto i = result.begin(); i != result.end(); i++) {
+        for (auto j = (*i).begin(); j != (*i).end(); j++) {
+            output->sputc(*j);
+        }
+        output->sputn("\n--------\n", 10);
+    }
 
     input->close();
     output->close();
