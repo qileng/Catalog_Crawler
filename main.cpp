@@ -69,12 +69,12 @@ int main(int argc, char** argv) {
     filebuf *input = is.rdbuf();
     filebuf *output = os.rdbuf();
 
-    input->open("./raw.html", ios_base::in);
+    input->open("./content.html", ios_base::in);
     output->open("./requirements", ios_base::out);
 
     // Scan for <h2>Courses</h2> and <!-- #EndEditable -->
-    string firstKey = "<p class=\"course-descriptions\">";
-    string secondKey = "</p>";
+    string firstKey = "id=\"";
+    string secondKey = "<a";
     filter *begin = new filter(firstKey.size(), firstKey);
     filter *end = new filter(secondKey.size(), secondKey);
 
@@ -83,33 +83,54 @@ int main(int argc, char** argv) {
     string description;
 
     // read from raw
-    while (input->sbumpc() != EOF) {
-        // TODO: Parse input
-        // output->sputc(input->sbumpc());
+    // while (input->sbumpc() != EOF) {
+    //     // TODO: Parse input
+    //     // output->sputc(input->sbumpc());
+    //
+    //     // Scan simultaneously.
+    //     if (begin == NULL || begin->push(input->sgetc())) {
+    //         // First Key matched
+    //         delete begin;
+    //         begin = NULL;
+    //         description.push_back(input->sgetc());
+    //         if (end->push(input->sgetc())) {
+    //             // Second Key matched
+    //             delete end;
+    //             result.push_back(description);
+    //             begin = new filter(firstKey.size(), firstKey);
+    //             end = new filter(secondKey.size(), secondKey);
+    //             description = "";
+    //         }
+    //     }
+    // }
 
-        // Scan simultaneously.
-        if (begin == NULL || begin->push(input->sgetc())) {
-            // First Key matched
-            delete begin;
-            begin = NULL;
-            description.push_back(input->sgetc());
-            if (end->push(input->sgetc())) {
-                // Second Key matched
-                delete end;
-                result.push_back(description);
-                begin = new filter(firstKey.size(), firstKey);
-                end = new filter(secondKey.size(), secondKey);
-                description = "";
-            }
+    // Original approach too ugly.
+    // First scan for key matching pair,
+    // then pause & search inbetween the pair.
+    string buf;
+    while (input->sgetc() != EOF && !begin->push(input->sbumpc()));
+    // while (input->sgetc() != EOF && (buf.push_back(input->sgetc()),!end->push(input->sdumpc())));
+    // Expand into loop body for readability
+    while (input->sgetc() != EOF ) {
+        // Put content into a buffer to avoid tampering with seek pos.
+        buf.push_back(input->sgetc());
+        if (end->push(input->sbumpc())) {
+            break;
         }
     }
+    // Seeking paused. Now search in buffer.
+    delete begin;
+    delete end;
 
-    for (auto i = result.begin(); i != result.end(); i++) {
-        for (auto j = (*i).begin(); j != (*i).end(); j++) {
-            output->sputc(*j);
-        }
-        output->sputn("\n////////\n", 10);
-    }
+    // Research buffer for course name
+
+
+    // for (auto i = result.begin(); i != result.end(); i++) {
+    //     for (auto j = (*i).begin(); j != (*i).end(); j++) {
+    //         output->sputc(*j);
+    //     }
+    //     output->sputn("\n////////\n", 10);
+    // }
 
     input->close();
     output->close();

@@ -16,6 +16,9 @@ def main():
 	data = HTTPGet()
 	data = trimHeader(data)
 	data = trimFooter(data)
+	# Save trimmed data.
+	rawFile = open("./content.html", mode='w', encoding = 'utf8')
+	rawFile.write(data)
 	# des = filterDescription(data)
 	# des = stripRequirement(des)
 	nam = filterName(data)

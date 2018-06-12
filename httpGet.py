@@ -28,7 +28,7 @@ def HTTPGet():
 		headerFile.write(r.headers[key] + '\n')
 
 	# Save the entire html
-	rawFile = open("./raw.html", mode='w', encoding = 'utf8')
-	rawFile.write(r.text)
+	#rawFile = open("./raw.html", mode='w', encoding = 'utf8')
+	#rawFile.write(r.text)
 
 	return r.text
