@@ -69,10 +69,14 @@ vector<string> readCourses(filebuf *input) {
 
     while (input->sgetc() != EOF) {
         string temp = "";
-        do {
-            temp.push_back(input->sgetc());
-        } while (input->sbumpc() != '\n');
+        cout << "outer\n";
+
+        while (input->sgetc() != '\n') {
+            cout << "inner\n";
+            temp.push_back(input->sbumpc());
+        }
         result.push_back(temp);
+        input->sbumpc();
     }
 
     input->close();
@@ -149,9 +153,9 @@ int main(int argc, char** argv) {
             // cout << int(input->pubseekoff(0, ios_base::cur, ios_base::in)) << "\n";
         }
         // Search in buffer
-        cout << int(buf.find("cse3")) << "\n";
-        cout << int(buf.find((*it).c_str())) << "\n";
-        cout << int(buf.find((*it).data())) << "\n";
+        // cout << int(buf.find("cse3")) << "\n";
+        // cout << int(buf.find((*it).c_str())) << "\n";
+        // cout << int(buf.find((*it).data())) << "\n";
         if (buf.find(*it) == string::npos) {
             cout << "No description for " << *it;
             cout << "In " << buf;
@@ -164,7 +168,6 @@ int main(int argc, char** argv) {
             cout << "Unexpected html pattern @ " << *it;
             it--;
             flag = 1;
-            buf.clear();
         } else {
             // Continue seeking, save buffer.
             result.push_back(buf + "\n");
