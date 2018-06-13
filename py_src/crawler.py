@@ -10,6 +10,9 @@ from httpGet import HTTPGet
 # TODO: Put all parsing steps into one parser.
 from parse import trimHeader, trimFooter, filterDescription, filterName, stripName, stripRequirement
 
+TEMP_PATH = "../temp/"
+RESULT_PATH = "../result/"
+
 
 def main():
 	# Retrieve raw data
@@ -17,14 +20,14 @@ def main():
 	data = trimHeader(data)
 	data = trimFooter(data)
 	# Save trimmed data.
-	rawFile = open("./content.html", mode='w', encoding = 'utf8')
+	rawFile = open(TEMP_PATH + "content.html", mode='w', encoding = 'utf8')
 	rawFile.write(data)
 	# des = filterDescription(data)
 	# des = stripRequirement(des)
 	nam = filterName(data)
 	nam = stripName(nam)
 
-	name = open("./name", mode = 'w', encoding = 'utf8')
+	name = open(RESULT_PATH + "name", mode = 'w', encoding = 'utf8')
 	# descriptions = open("./descriptions", mode = 'w', encoding = 'utf8')
 	#
 	# for entry in des:

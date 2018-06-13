@@ -27,6 +27,14 @@
 #include "io_util.h"
 #endif
 
+#ifndef TEMP_PATH
+#define TEMP_PATH "../temp/"
+#endif
+
+#ifndef RESULT_PATH
+#define RESULT_PATH "../result/"
+#endif
+
 using namespace std;
 
 int main(int argc, char** argv) {
@@ -40,8 +48,13 @@ int main(int argc, char** argv) {
     // Read list of course names first.
     vector<string> name = readCourses(input);
 
-    input->open("./content.html", ios_base::in);
-    output->open("./requirements", ios_base::out);
+	string inputPath = TEMP_PATH;
+	inputPath += "/content.html";
+	string outputPath = RESULT_PATH;
+	outputPath += "./requirements";
+
+    input->open(inputPath, ios_base::in);
+    output->open(outputPath, ios_base::out);
 
     string firstKey = "id=\"";
     string secondKey = "<a";

@@ -9,6 +9,8 @@
 import requests
 from time import localtime, strftime
 
+LOG_PATH = "../log"
+
 # Make http get request and do the logging.
 def HTTPGet():
 	# HTTP get request. 
@@ -16,16 +18,16 @@ def HTTPGet():
 
 	# Logging
 	t = strftime("%H:%M:%S Local Time, %b %d %Y")
-	Log = open("./log", mode= 'w', encoding = 'utf8')
+	Log = open(LOG_PATH, mode= 'w', encoding = 'utf8')
 	Log.write(t + '\n')
 	Log.write(str(r.status_code) + '\n')
 	Log.write(r.encoding + '\n')
 
 	# Logging header from request
-	headerFile = open("./header", mode= 'w', encoding = 'utf8')
+	Log.write("HTTP GET REQUEST: --------------------------------------\n")
 	for key in r.headers:
-		headerFile.write(key + " : ")
-		headerFile.write(r.headers[key] + '\n')
+		Log.write(key + " : ")
+		Log.write(r.headers[key] + '\n')
 
 	# Save the entire html
 	#rawFile = open("./raw.html", mode='w', encoding = 'utf8')

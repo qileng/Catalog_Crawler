@@ -9,10 +9,16 @@
 #include "io_util.h"
 #endif
 
+#ifndef RESULT_PATH
+#define RESULT_PATH "../result/"
+#endif
+
 std::vector<std::string> readCourses(std::filebuf *input) {
     std::vector<std::string> result;
 
-    input->open("./name", std::ios_base::in);
+	std::string path = RESULT_PATH;
+	path += "name";
+    input->open(path, std::ios_base::in);
 
     while (input->sgetc() != EOF) {
         std::string temp = "";

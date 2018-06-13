@@ -1,19 +1,22 @@
 HEADERS		= filter.h io_util.h parse.h
 SRCS		= main.cpp $(HEADERS:.h=.cpp)
 OBJS		= $(SRCS:.cpp=.o)
-BIN			= parseRequirements
+BIN			= ../bin/parseRequirements
 STD			= -std=c++11
+PATH		= ../headers
+TEMP		= ../temp
 
 $(BIN): $(OBJS)
 	@echo "Linking..."
-	g++ $(STD) $(OBJS) -o $(BIN)
+	g++ -I $(PATH) $(STD) $(OBJS) -o $(BIN)
 	@echo "Done."
 
-$(OBJS): $(SRCS) $(HEADERS)
+$(OBJS): $(SRCS)
 	@echo "Compiling..."
-	g++ $(STD) -c $(SRCS)
+	g++ -I $(PATH) $(STD) -c $(SRCS)
 	@echo "Done"
 
 clean:
 	rm $(BIN) $(OBJS)
+	rm -r $(TEMP)
 
